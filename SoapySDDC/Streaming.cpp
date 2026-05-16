@@ -54,14 +54,20 @@ SoapySDR::Stream *SoapySDDC::setupStream(const int direction,
 
     bufferLength = 262144 / bytesPerSample;
 
+    numBuffers = DEFAULT_NUM_BUFFERS;
+    if (args.count("buffers") != 0) {
+        try {
+            int n = std::stoi(args.at("buffers"));
+            if (n > 0) numBuffers = static_cast<size_t>(n);
+        } catch (const std::invalid_argument &) {}
+    }
+
     _buf_tail = 0;
     _buf_head = 0;
     _buf_count = 0;
 
     // allocate buffers
     _buffs.resize(numBuffers);
-    for (auto &buff : _buffs)
-        buff.reserve(bufferLength * bytesPerSample);
     for (auto &buff : _buffs)
         buff.resize(bufferLength * bytesPerSample);
 

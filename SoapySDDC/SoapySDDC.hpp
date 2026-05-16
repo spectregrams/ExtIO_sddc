@@ -14,6 +14,8 @@ struct DevContext
     char dev[MAXNDEV][MAXDEVSTRLEN];
 };
 
+#define DEFAULT_NUM_BUFFERS 1024
+
 class SoapySDDC : public SoapySDR::Device
 {
 public:

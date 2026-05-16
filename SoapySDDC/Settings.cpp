@@ -37,7 +37,7 @@ int SoapySDDC::Callback(void *context, const float *data, uint32_t len)
 
 SoapySDDC::SoapySDDC(const SoapySDR::Kwargs &args) : deviceId(-1),
                                                      Fx3(CreateUsbHandler()),
-                                                     numBuffers(16),
+                                                     numBuffers(DEFAULT_NUM_BUFFERS),
                                                      sampleRate(32000000)
 {
     DbgPrintf("SoapySDDC::SoapySDDC\n");
@@ -385,12 +385,8 @@ double SoapySDDC::computeSampleRateFromIndex(int idx) const
     double srateM = div * 2.0;
     double rate = bwmin * srateM;
     
-    // Nyquist validation with 10% tolerance (1.1x instead of 1.0x)
-    // Intentional design per PR #240 GitHub Copilot review recommendation:
-    // Allows margin for floating-point precision, hardware ADC clock tolerances,
-    // and DSP pipeline headroom. ExtIO doesn't need this check because it restricts
-    // ADC to discrete values; SoapySDDC supports arbitrary 50-140 MHz ADC frequencies.
-    if (rate / adcnominalfreq * 2.0 > 1.1) {
+    // Nyquist validation.
+    if (rate / adcnominalfreq * 2.0 > 1.0) {
         return -1.0;
     }
     
