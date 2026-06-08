@@ -73,7 +73,7 @@ fft_mt_r2iq::~fft_mt_r2iq()
 	if (filterHw == nullptr)
 		return;
 
-	fftwf_export_wisdom_to_filename("wisdom");
+	fftwf_export_wisdom_to_filename(wisdom_filename);
 
 	for (int d = 0; d < NDECIDX; d++)
 	{
@@ -142,7 +142,7 @@ void fft_mt_r2iq::Init(float gain, ringbuffer<int16_t> *input, ringbuffer<float>
 
 	this->GainScale = gain;
 
-	fftwf_import_wisdom_from_filename("wisdom");
+	fftwf_import_wisdom_from_filename(wisdom_filename);
 
 	// Get the processor count
 	processor_count = std::thread::hardware_concurrency() - 1;

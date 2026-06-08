@@ -57,6 +57,7 @@ void RadioHandlerClass::OnDataPacket()
 }
 
 RadioHandlerClass::RadioHandlerClass() :
+	r2iqCntrl(nullptr),
 	DbgPrintFX3(nullptr),
 	GetConsoleIn(nullptr),
 	run(false),
@@ -76,6 +77,8 @@ RadioHandlerClass::RadioHandlerClass() :
 
 RadioHandlerClass::~RadioHandlerClass()
 {
+	delete r2iqCntrl;
+	r2iqCntrl = nullptr;
 	delete stateFineTune;
 }
 
