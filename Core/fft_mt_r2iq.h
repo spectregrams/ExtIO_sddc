@@ -10,6 +10,7 @@
 #define N_MAX_R2IQ_THREADS 1
 #define PRINT_INPUT_RANGE  0
 
+inline constexpr char wisdom_filename[] = "ExtIO_sddc.wisdom";
 static const int halfFft = FFTN_R_ADC / 2;    // half the size of the first fft at ADC 64Msps real rate (2048)
 static const int fftPerBuf = transferSize / sizeof(short) / (3 * halfFft / 2) + 1; // number of ffts per buffer with 256|768 overlap
 
