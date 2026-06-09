@@ -1,44 +1,38 @@
-cmake_minimum_required(VERSION 3.13)
+find_package(Boost REQUIRED COMPONENTS unit_test_framework)
 
-include(ExternalProject)
-ExternalProject_Add(
-    LIBCPPUNIT
-    GIT_REPOSITORY https://github.com/drleq/CppUnitTestFramework.git
-    GIT_TAG 1.2.2
-    CONFIGURE_COMMAND   ""
-    BUILD_COMMAND       ""
-    INSTALL_COMMAND     ""
+file(GLOB UNITTEST_SOURCES "*.cpp")
+
+add_executable(unittest ${UNITTEST_SOURCES})
+
+target_include_directories(unittest
+    PRIVATE
+        "${LIBFFTW_INCLUDE_DIRS}"
+        "${CMAKE_CURRENT_SOURCE_DIR}"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../Core"
 )
-ExternalProject_Get_Property(LIBCPPUNIT SOURCE_DIR)
-SET(LIBCPPUNIT_INCLUDE_DIRS ${SOURCE_DIR})
 
-file(GLOB UNITTESTS "./*.cpp")
+target_link_directories(unittest PRIVATE "${LIBFFTW_LIBRARY_DIRS}")
 
-add_executable(unittest ${UNITTESTS})
-add_dependencies(unittest LIBCPPUNIT)
+target_compile_definitions(unittest PRIVATE BOOST_TEST_DYN_LINK)
 
-target_include_directories(unittest PUBLIC "${LIBFFTW_INCLUDE_DIR}")
-target_link_directories(unittest PUBLIC "${LIBFFTW_LIBRARY_DIRS}")
+target_link_libraries(unittest
+    PRIVATE
+    SDDC_CORE
+    Boost::unit_test_framework
+    ${ASANLIB}
+)
 
-include_directories("." "../Core")
-include_directories(${LIBCPPUNIT_INCLUDE_DIRS})
+if (NOT MSVC)
+    target_link_libraries(unittest PRIVATE pthread)
+endif()
 
-target_link_libraries(unittest PRIVATE SDDC_CORE)
-if (MSVC)
-else()
-  target_link_libraries(unittest PUBLIC pthread ${ASANLIB})
-endif (MSVC)
+# Fast tests – safe to run in CI with no device attached.
+add_test(
+    NAME    unit
+    COMMAND unittest --run_test=!@integration --log_level=message
+)
 
-
-foreach(TESTSRC ${UNITTESTS})
-    file(STRINGS ${TESTSRC} TESTS REGEX "^TEST_CASE\(.+\)")
-    foreach(TEST ${TESTS})
-        if (${TEST} MATCHES "TEST_CASE\\(([^,]+)[\\s,]*([^\\)]+)\\)")
-            set(FIXTURE ${CMAKE_MATCH_1})
-            set(TESTNAME ${CMAKE_MATCH_2})
-            string(STRIP ${FIXTURE} FIXTURE)
-            string(STRIP ${TESTNAME} TESTNAME)
-            add_test(${FIXTURE}_${TESTNAME} unittest ${FIXTURE}::${TESTNAME})
-        endif()
-    endforeach()
-endforeach()
+add_test(
+    NAME    integration
+    COMMAND unittest --run_test=@integration --log_level=message
+)
