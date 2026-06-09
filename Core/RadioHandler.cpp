@@ -87,7 +87,7 @@ const char *RadioHandlerClass::getName() const
 	return hardware->getName();
 }
 
-bool RadioHandlerClass::Init(fx3class* Fx3, void (*callback)(void*context, const float*, uint32_t), r2iqControlClass *r2iqCntrl, void *context)
+bool RadioHandlerClass::Init(fx3class* Fx3, void (*callback)(void*context, const float*, uint32_t), r2iqControlClass *r2iqCntrl, void *context, std::optional<std::string> wisdom_filename)
 {
 	uint8_t rdata[4];
 	this->fx3 = Fx3;
@@ -142,7 +142,7 @@ bool RadioHandlerClass::Init(fx3class* Fx3, void (*callback)(void*context, const
 	hardware->Initialize(adcnominalfreq);
 	DbgPrintf("%s | firmware %x\n", hardware->getName(), firmware);
 	this->r2iqCntrl = r2iqCntrl;
-	r2iqCntrl->Init(hardware->getGain(), &inputbuffer, &outputbuffer);
+	r2iqCntrl->Init(hardware->getGain(), &inputbuffer, &outputbuffer, wisdom_filename);
 
 	return true;
 }

@@ -12,6 +12,8 @@
 
 #include "dsp/ringbuffer.h"
 
+#include <optional>
+
 class RadioHardware;
 class r2iqControlClass;
 
@@ -30,7 +32,7 @@ class RadioHandlerClass {
 public:
     RadioHandlerClass();
     virtual ~RadioHandlerClass();
-    bool Init(fx3class* Fx3, void (*callback)(void* context, const float*, uint32_t), r2iqControlClass *r2iqCntrl = nullptr, void* context = nullptr);
+    bool Init(fx3class* Fx3, void (*callback)(void* context, const float*, uint32_t), r2iqControlClass *r2iqCntrl = nullptr, void* context = nullptr, std::optional<std::string> wisdom_filename = std::nullopt);
     bool Start(int srate_idx);
     bool Stop();
     bool Close();

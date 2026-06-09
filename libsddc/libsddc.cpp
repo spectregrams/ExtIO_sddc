@@ -22,7 +22,11 @@ static void Callback(void* context, const float* data, uint32_t len)
 }
 
 class rawdata : public r2iqControlClass {
-    void Init(float gain, ringbuffer<int16_t>* buffers, ringbuffer<float>* obuffers) override
+    
+    // Looks like this class is a stub for streaming raw samples from the device. In that case, it wouldn't make use of FFTW,
+    // since no DFTs are required. And so, the default argument `wisdom_filename` is meaningless. Probably, this is a design
+    // problem and can be tackled later. See https://github.com/spectregrams/spectre/issues/244.
+    void Init(float gain, ringbuffer<int16_t>* buffers, ringbuffer<float>* obuffers, std::optional<std::string> wisdom_filename) override
     {
         idx = 0;
     }

@@ -18,9 +18,11 @@ The name r2iq as Real 2 I+Q stream
 #include "RadioHandler.h"
 
 #include "fir.h"
+#include <filesystem>
 
 #include <assert.h>
 #include <utility>
+#include <iostream>
 
 
 r2iqControlClass::r2iqControlClass()
@@ -70,11 +72,9 @@ fft_mt_r2iq::fft_mt_r2iq() :
 
 fft_mt_r2iq::~fft_mt_r2iq()
 {
+	
 	if (filterHw == nullptr)
 		return;
-
-	fftwf_export_wisdom_to_filename(wisdom_filename);
-
 	for (int d = 0; d < NDECIDX; d++)
 	{
 		fftwf_free(filterHw[d]);     // 4096
@@ -135,14 +135,16 @@ void fft_mt_r2iq::TurnOff(void) {
 
 bool fft_mt_r2iq::IsOn(void) { return(this->r2iqOn); }
 
-void fft_mt_r2iq::Init(float gain, ringbuffer<int16_t> *input, ringbuffer<float>* obuffers)
+void fft_mt_r2iq::Init(float gain, ringbuffer<int16_t> *input, ringbuffer<float>* obuffers, std::optional<std::string> wisdom_filename)
 {
 	this->inputbuffer = input;    // set to the global exported by main_loop
 	this->outputbuffer = obuffers;  // set to the global exported by main_loop
 
 	this->GainScale = gain;
 
-	fftwf_import_wisdom_from_filename(wisdom_filename);
+	const std::string filename = wisdom_filename.value_or(default_wisdom_filename);
+
+	fftwf_import_wisdom_from_filename(filename.c_str());
 
 	// Get the processor count
 	processor_count = std::thread::hardware_concurrency() - 1;
@@ -214,6 +216,10 @@ void fft_mt_r2iq::Init(float gain, ringbuffer<int16_t> *input, ringbuffer<float>
 		{
 			plans_f2t_c2c[d] = fftwf_plan_dft_1d(mfftdim[d], threadArgs[0]->inFreqTmp, threadArgs[0]->inFreqTmp, FFTW_BACKWARD, FFTW_MEASURE);
 		}
+
+		if (auto parent = std::filesystem::path(filename).parent_path(); !parent.empty())
+			std::filesystem::create_directories(parent);
+		fftwf_export_wisdom_to_filename(filename.c_str());
 	}
 }
 
