@@ -22,7 +22,6 @@ The name r2iq as Real 2 I+Q stream
 
 #include <assert.h>
 #include <utility>
-#include <iostream>
 
 
 r2iqControlClass::r2iqControlClass()
