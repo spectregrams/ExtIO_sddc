@@ -13,6 +13,7 @@
 #include "dsp/ringbuffer.h"
 
 #include <optional>
+#include <string>
 
 class RadioHardware;
 class r2iqControlClass;

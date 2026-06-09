@@ -7,6 +7,7 @@
 #include <string.h>
 
 #include <optional>
+#include <string>
 
 // use up to this many threads
 #define N_MAX_R2IQ_THREADS 1

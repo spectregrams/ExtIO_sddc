@@ -14,6 +14,7 @@ BOOST_AUTO_TEST_CASE(WisdomExported, *boost::unit_test::label("integration")) {
   SoapySDR::Kwargs kwargs = {{"driver", "SDDC"},
                              {"wisdom_filename", wisdom_filename.string()}};
   SoapySDR::Device *dev = SoapySDR::Device::make(kwargs);
+  BOOST_REQUIRE(dev != nullptr);
   BOOST_CHECK(std::filesystem::exists(wisdom_filename));
 
   // Clean-up.
