@@ -1,4 +1,8 @@
-find_package(Boost REQUIRED COMPONENTS unit_test_framework)
+find_package(Boost COMPONENTS unit_test_framework)
+if(NOT Boost_FOUND)
+    message(WARNING "Boost.Test not found - skipping unit tests")
+    return()
+endif()
 
 file(GLOB UNITTEST_SOURCES "*.cpp")
 
