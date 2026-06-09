@@ -11,6 +11,8 @@
 
 #include "dsp/ringbuffer.h"
 
+#include <optional>
+
 struct r2iqThreadArg;
 
 class r2iqControlClass {
@@ -28,7 +30,7 @@ public:
 
     void setDecimate(int dec) {this->mdecimation = dec; }
 
-    virtual void Init(float gain, ringbuffer<int16_t>* input, ringbuffer<float>* obuffers) {}
+    virtual void Init(float gain, ringbuffer<int16_t>* input, ringbuffer<float>* obuffers, std::optional<std::string> wisdom_filename) {}
     virtual void TurnOn() { this->r2iqOn = true; }
     virtual void TurnOff(void) { this->r2iqOn = false; }
     virtual bool IsOn(void) { return this->r2iqOn; }

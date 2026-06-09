@@ -1,8 +1,5 @@
-find_package(Boost COMPONENTS unit_test_framework)
-if(NOT Boost_FOUND)
-    message(WARNING "Boost.Test not found - skipping unit tests")
-    return()
-endif()
+find_package(Boost COMPONENTS unit_test_framework REQUIRED)
+find_package(SoapySDR CONFIG REQUIRED)
 
 file(GLOB UNITTEST_SOURCES "*.cpp")
 
@@ -22,6 +19,7 @@ target_compile_definitions(unittest PRIVATE BOOST_TEST_DYN_LINK)
 target_link_libraries(unittest
     PRIVATE
     SDDC_CORE
+    SoapySDR
     Boost::unit_test_framework
     ${ASANLIB}
 )

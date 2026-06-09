@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <sys/types.h>
 #include <cstring>
+#include <optional>
 
 static void _Callback(void *context, const float *data, uint32_t len)
 {
@@ -45,7 +46,11 @@ SoapySDDC::SoapySDDC(const SoapySDR::Kwargs &args) : deviceId(-1),
     DevContext devicelist;
     Fx3->Enumerate(idx, devicelist.dev[0]);
     Fx3->Open();
-    RadioHandler.Init(Fx3, _Callback, nullptr, this);
+
+    std::optional<std::string> wisdom_filename;
+    if (auto it = args.find("wisdom_filename"); it != args.end())
+        wisdom_filename = it->second;
+    RadioHandler.Init(Fx3, _Callback, nullptr, this, wisdom_filename);
 
     if (supportsHighADCFrequency()) {
         adcnominalfreq = 128000000;
