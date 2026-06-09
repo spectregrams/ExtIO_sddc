@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.13)
 project(SDDC VERSION 1.0.1)
 
 include(CTest)
+option(ENABLE_TESTING "Build and run unit tests" ON)
 
 include(./cmake/CheckGit.cmake)
 CheckGitSetup()
@@ -74,7 +75,9 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG")
 
 add_subdirectory(Core)
 add_subdirectory(libsddc)
-add_subdirectory(unittest)
+if(ENABLE_TESTING)
+    add_subdirectory(unittest)
+endif()
 
 if (MSVC)
     add_subdirectory(ExtIO_sddc)

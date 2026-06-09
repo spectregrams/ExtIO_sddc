@@ -1,4 +1,2 @@
-#define GENERATE_UNIT_TEST_MAIN
-#include <limits>
-#include <cstdint>
-#include "CppUnitTestFramework.hpp"
+#define BOOST_TEST_MODULE SDDC_UnitTests
+#include <boost/test/unit_test.hpp>
