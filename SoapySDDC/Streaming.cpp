@@ -29,6 +29,15 @@ SoapySDR::ArgInfoList SoapySDDC::getStreamArgsInfo(const int direction, const si
     DbgPrintf("SoapySDDC::getStreamArgsInfo\n");
     SoapySDR::ArgInfoList streamArgs;
 
+    SoapySDR::ArgInfo buffersArg;
+    buffersArg.key = "buffers";
+    buffersArg.value = std::to_string(DEFAULT_NUM_BUFFERS);
+    buffersArg.name = "Buffer Count";
+    buffersArg.description = "Depth of the receive ring buffer.";
+    buffersArg.units = "buffers";
+    buffersArg.type = SoapySDR::ArgInfo::INT;
+    streamArgs.push_back(buffersArg);
+
     return streamArgs;
 }
 
